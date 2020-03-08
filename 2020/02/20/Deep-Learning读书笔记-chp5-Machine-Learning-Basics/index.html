@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="如何捕捉非线性关系$\phi$1、选取一个非常通用的$\phi$，例如RBF核使用的无限维度的$\phi$。使用这样的通常会有足够的能力来适应训练集，但通常不会取得很好的泛化误差。非常通用的特征映射通常是基于局部平滑性，没有引入足够的先验的偏置的信息2、人工映射$\phi$。在深度学习兴起之前，自然语言、图像处理、语音识别领域做了分别做了很多努力，但这些对应的编映射的迁移能力很差，没有通用性3、深">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Learning读书笔记 chp6-Deep Feedforward Networks">
+<meta property="og:url" content="http://lpfan0307.com/2020/02/20/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp5-Machine-Learning-Basics/index.html">
+<meta property="og:site_name" content="life of nullfan">
+<meta property="og:description" content="如何捕捉非线性关系$\phi$1、选取一个非常通用的$\phi$，例如RBF核使用的无限维度的$\phi$。使用这样的通常会有足够的能力来适应训练集，但通常不会取得很好的泛化误差。非常通用的特征映射通常是基于局部平滑性，没有引入足够的先验的偏置的信息2、人工映射$\phi$。在深度学习兴起之前，自然语言、图像处理、语音识别领域做了分别做了很多努力，但这些对应的编映射的迁移能力很差，没有通用性3、深">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://lpfan0307.com/images/pasted-65.png">
+<meta property="article:published_time" content="2020-02-20T10:48:40.000Z">
+<meta property="article:modified_time" content="2020-03-08T15:06:49.990Z">
+<meta property="article:author" content="nullfan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lpfan0307.com/images/pasted-65.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lpfan0307.com/2020/02/20/Deep-Learning读书笔记-chp5-Machine-Learning-Basics/"/>
+
+
+
+
+
+  <title>Deep Learning读书笔记 chp6-Deep Feedforward Networks | life of nullfan</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">life of nullfan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lpfan0307.com/2020/02/20/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp5-Machine-Learning-Basics/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="nullfan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="life of nullfan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Deep Learning读书笔记 chp6-Deep Feedforward Networks</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-20T18:48:40+08:00">
+                2020-02-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="如何捕捉非线性关系-phi"><a href="#如何捕捉非线性关系-phi" class="headerlink" title="如何捕捉非线性关系$\phi$"></a>如何捕捉非线性关系$\phi$</h1><p>1、选取一个非常通用的$\phi$，例如RBF核使用的无限维度的$\phi$。使用这样的通常会有足够的能力来适应训练集，但通常不会取得很好的泛化误差。非常通用的特征映射通常是基于局部平滑性，没有引入足够的先验的偏置的信息<br>2、人工映射$\phi$。在深度学习兴起之前，自然语言、图像处理、语音识别领域做了分别做了很多努力，但这些对应的编映射的迁移能力很差，没有通用性<br>3、深度学习采用的方式是学习这样的$\phi$。这样的一个好处是，我们只需要定义一个宽泛的函数簇，交给神经网络去学习，而不是从找到一个很精确的函数簇  </p>
+<p>choose the optimizer<br>the cost function<br>the form of output<br>activation functions</p>
+<h1 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h1><h2 id="relu"><a href="#relu" class="headerlink" title="relu"></a>relu</h2><p>在现代神经网络中，默认的激活函数一般选取Relu（rectified linear unit）。使用Relu可以获得非线性变换。由于Relu非常接近线性函数，可以保留许多线性函数使用随机梯度下降的优势，同时也保留了线性函数泛化好的特性。Relu在其定义域中的一半都是线性函数，这使得在其激活（active）时，其导数都很大。</p>
+<h2 id="sigmod"><a href="#sigmod" class="headerlink" title="sigmod"></a>sigmod</h2><p>Sigmod函数$g(z) = /sigma (z)$，当$z$为比较的负数的时候，函数本身值会非常小；并且只有函数值只有$z$在0附近的时候才非常敏感，所以sigmod函数当做前馈神经网络隐层的激活函数是不推荐的。sigmod在某些特定的时刻可以作为输出层，比如当损失函数可以抵消simod函数的saturation时。<br>Sigmod在非前馈神经网络通常使用得更加频繁。例如RNN、autoencoders等神经网络，这些神经网络排除了线性模型，所以还是会更多的使用sigmod函数尽管依然存在saturation。  </p>
+<h2 id="某些层可以使单纯的线性函数"><a href="#某些层可以使单纯的线性函数" class="headerlink" title="某些层可以使单纯的线性函数"></a>某些层可以使单纯的线性函数</h2><p>单纯使用线性函数可以起到压缩神经网络的效果。考虑一个有$n$个输入和$p$个输出的神经网络，如果直接映射，需要np个参数；如果中间加上一层的输出有$q$个参数，那么总共是需要$(n + p)q$个参数。对于比较小的$q$，可以起到很好的压缩空间的效果。这可以理解为将输入映射到一个低维空间，但通常很小的低维空间也可以表示很多原始的信息。</p>
+<h1 id="损失函数的选取"><a href="#损失函数的选取" class="headerlink" title="损失函数的选取"></a>损失函数的选取</h1><p>损失函数的梯度必须足够大以便于给学习算法提供一些指导。<br>negative log-likelihood可以帮助很多模型解决梯度过小的问题。<br>MSE和MAE不适合作为损失函数，因为他们和其他输出层和这些损失函数一起的时候，通常会导致很小的梯度。 </p>
+<h1 id="神经网络架构的设计"><a href="#神经网络架构的设计" class="headerlink" title="神经网络架构的设计"></a>神经网络架构的设计</h1><p>更深的神经网络通常每层需要的单元和参数更少，泛化能力更强，但也更难被优化。<br>屏幕快照 2020-02-23 下午10.28.00<br><img src="/images/pasted-65.png" alt="upload successful">  </p>
+<p>使用更深的神经网络通常基于这样一个信念：我们需要学习的函数是由很多简单的函数组成的。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/12/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp4-Numerical-Computation/" rel="next" title="Deep Learning读书笔记 chp5-Machine Learning Basics">
+                <i class="fa fa-chevron-left"></i> Deep Learning读书笔记 chp5-Machine Learning Basics
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/23/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp7-Regularization-for-Deep-Learning/" rel="prev" title="Deep Learning读书笔记 chp7-Regularization for Deep Learning">
+                Deep Learning读书笔记 chp7-Regularization for Deep Learning <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">nullfan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#如何捕捉非线性关系-phi"><span class="nav-number">1.</span> <span class="nav-text">如何捕捉非线性关系$\phi$</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#激活函数"><span class="nav-number">2.</span> <span class="nav-text">激活函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#relu"><span class="nav-number">2.1.</span> <span class="nav-text">relu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sigmod"><span class="nav-number">2.2.</span> <span class="nav-text">sigmod</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#某些层可以使单纯的线性函数"><span class="nav-number">2.3.</span> <span class="nav-text">某些层可以使单纯的线性函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#损失函数的选取"><span class="nav-number">3.</span> <span class="nav-text">损失函数的选取</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#神经网络架构的设计"><span class="nav-number">4.</span> <span class="nav-text">神经网络架构的设计</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nullfan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

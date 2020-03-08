@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="practical design processdetermine your goals1performance metric 和 cost function 通常情况下，performance metric和cost function是不相同的，通常使用准确率、错误率等来衡量一个系统，而使用log loss等来作为cost function   establish a working end-t">
+<meta property="og:type" content="article">
+<meta property="og:title" content=" Deep Learning读书笔记 chp11 &amp; chp12">
+<meta property="og:url" content="http://lpfan0307.com/2020/02/28/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp11-chp12/index.html">
+<meta property="og:site_name" content="life of nullfan">
+<meta property="og:description" content="practical design processdetermine your goals1performance metric 和 cost function 通常情况下，performance metric和cost function是不相同的，通常使用准确率、错误率等来衡量一个系统，而使用log loss等来作为cost function   establish a working end-t">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://lpfan0307.com/images/pasted-79.png">
+<meta property="og:image" content="http://lpfan0307.com/images/pasted-81.png">
+<meta property="article:published_time" content="2020-02-28T15:43:17.000Z">
+<meta property="article:modified_time" content="2020-03-08T15:06:49.989Z">
+<meta property="article:author" content="nullfan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lpfan0307.com/images/pasted-79.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lpfan0307.com/2020/02/28/Deep-Learning读书笔记-chp11-chp12/"/>
+
+
+
+
+
+  <title> Deep Learning读书笔记 chp11 & chp12 | life of nullfan</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">life of nullfan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lpfan0307.com/2020/02/28/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp11-chp12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="nullfan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="life of nullfan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline"> Deep Learning读书笔记 chp11 & chp12</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-28T23:43:17+08:00">
+                2020-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="practical-design-process"><a href="#practical-design-process" class="headerlink" title="practical design process"></a>practical design process</h1><h2 id="determine-your-goals"><a href="#determine-your-goals" class="headerlink" title="determine your goals"></a>determine your goals</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">performance metric 和 cost function</span><br></pre></td></tr></table></figure>
+<p>通常情况下，performance metric和cost function是不相同的，通常使用准确率、错误率等来衡量一个系统，而使用log loss等来作为cost function  </p>
+<h2 id="establish-a-working-end-to-end-pipeline-as-soon-as-possible"><a href="#establish-a-working-end-to-end-pipeline-as-soon-as-possible" class="headerlink" title="establish a working end-to-end pipeline as soon as possible"></a>establish a working end-to-end pipeline as soon as possible</h2><p>通常使用SGD（with momentum，with a deaying learning rate）来作为baseline  </p>
+<h2 id="instrument-the-system-well-to-determine-bottlenecks-in-performance"><a href="#instrument-the-system-well-to-determine-bottlenecks-in-performance" class="headerlink" title="instrument the system well to determine bottlenecks in performance"></a>instrument the system well to determine bottlenecks in performance</h2><h2 id="repeatly-make-incremental-changes"><a href="#repeatly-make-incremental-changes" class="headerlink" title="repeatly make incremental changes"></a>repeatly make incremental changes</h2><h3 id="是否需要获取更多数据"><a href="#是否需要获取更多数据" class="headerlink" title="是否需要获取更多数据"></a>是否需要获取更多数据</h3><p>虽然可以采用不同的算法来提升系统，但获取更多的数据经常是一个更好的做法，可以通过画出training set size和generation error的方式来看出是否需要更多的训练数据  </p>
+<h3 id="参数调整"><a href="#参数调整" class="headerlink" title="参数调整"></a>参数调整</h3><p>学习率几乎是最终要的参数，如果只能够调整一个参数，那么就调整学习率<br>其他参数的调整需要通过观察训练误差和泛化误差来做出结论<br>如果训练集误差比泛化误差大，则模型是under fitting，需要增加模型的复杂度；如果训练集误差比泛化误差小，通常可以在正则项做一些文章。  </p>
+<h3 id="grid-search-VS-random-search"><a href="#grid-search-VS-random-search" class="headerlink" title="grid search VS random search"></a>grid search VS random search</h3><p><img src="/images/pasted-79.png" alt="upload successful"><br>一个模型通常只对几个特定的参数敏感，例如图中该模型只对横坐标的值敏感，使用grid search会重复多次相同横坐标的值而浪费计算资源。使用random search可以取得更好的效果，random search的一个例子如下：<br>log_learning_rate ~ $u(-1, -5)$<br>learning_rate = $10^{log_learning_rate}$  </p>
+<h3 id="debugging-strategies"><a href="#debugging-strategies" class="headerlink" title="debugging strategies"></a>debugging strategies</h3><ul>
+<li>visualize the model in action，例如可以观察模型中隐藏节点的激活比例等等    </li>
+<li>visual the worst mistakes，这个是个很好的想法，通常看模型最不确定的正样本可以获取不少的insight，不论是模型的学习效果还是特征的补充  <h3 id="不同年份都区分开的语言模型"><a href="#不同年份都区分开的语言模型" class="headerlink" title="不同年份都区分开的语言模型"></a>不同年份都区分开的语言模型</h3><img src="/images/pasted-81.png" alt="upload successful">  <h2 id="High-Dimensional-Outputs"><a href="#High-Dimensional-Outputs" class="headerlink" title="High-Dimensional Outputs"></a>High-Dimensional Outputs</h2>在自然语言处理中，通常会遇到输出维度很多的情况。为了减轻计算的复杂度，通常有下面的做法  </li>
+<li>use of a short list，将输出限制在最常见的word(10000~20000)中  </li>
+<li>hierachical softmax，这个存在的一个问题是如果数中的类不是很准确，得到的结果可能会很差  </li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/27/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp10-Sequence-Modeling-Recurrent-and-Recursive-Nets/" rel="next" title=" Deep Learning读书笔记 chp10-Sequence Modeling: Recurrent and Recursive Nets">
+                <i class="fa fa-chevron-left"></i>  Deep Learning读书笔记 chp10-Sequence Modeling: Recurrent and Recursive Nets
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/01/ch1-Recommender-Systems-An-Introduction-to-Recommender-Systems/" rel="prev" title=" Recommender Systems-ch1 An Introduction to Recommender Systems">
+                 Recommender Systems-ch1 An Introduction to Recommender Systems <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">nullfan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#practical-design-process"><span class="nav-number">1.</span> <span class="nav-text">practical design process</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#determine-your-goals"><span class="nav-number">1.1.</span> <span class="nav-text">determine your goals</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#establish-a-working-end-to-end-pipeline-as-soon-as-possible"><span class="nav-number">1.2.</span> <span class="nav-text">establish a working end-to-end pipeline as soon as possible</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#instrument-the-system-well-to-determine-bottlenecks-in-performance"><span class="nav-number">1.3.</span> <span class="nav-text">instrument the system well to determine bottlenecks in performance</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#repeatly-make-incremental-changes"><span class="nav-number">1.4.</span> <span class="nav-text">repeatly make incremental changes</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#是否需要获取更多数据"><span class="nav-number">1.4.1.</span> <span class="nav-text">是否需要获取更多数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数调整"><span class="nav-number">1.4.2.</span> <span class="nav-text">参数调整</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#grid-search-VS-random-search"><span class="nav-number">1.4.3.</span> <span class="nav-text">grid search VS random search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#debugging-strategies"><span class="nav-number">1.4.4.</span> <span class="nav-text">debugging strategies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不同年份都区分开的语言模型"><span class="nav-number">1.4.5.</span> <span class="nav-text">不同年份都区分开的语言模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#High-Dimensional-Outputs"><span class="nav-number">1.5.</span> <span class="nav-text">High-Dimensional Outputs</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nullfan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

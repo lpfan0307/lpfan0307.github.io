@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="deep learning,linear algebra," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Deep Learning第二章，线性代数，这里我摘抄一些重要的公式，顺便练习下latex   1矩阵乘法的分配律和结合律  $A(B+C) &#x3D; AB + AC$ $A(BC) &#x3D; (AB)C$    1Norms $L^p $ Norm如下：$||x||_p &#x3D; (\sum_i{|x_i|}^p)^{1 \over p}$   Norm有如下性质：  $f(x) &#x3D; 0 \Rightarrow">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Learning读书笔记 chp2-Linear Algebra">
+<meta property="og:url" content="http://lpfan0307.com/2020/01/20/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp2-Linear-Algebra/index.html">
+<meta property="og:site_name" content="life of nullfan">
+<meta property="og:description" content="Deep Learning第二章，线性代数，这里我摘抄一些重要的公式，顺便练习下latex   1矩阵乘法的分配律和结合律  $A(B+C) &#x3D; AB + AC$ $A(BC) &#x3D; (AB)C$    1Norms $L^p $ Norm如下：$||x||_p &#x3D; (\sum_i{|x_i|}^p)^{1 \over p}$   Norm有如下性质：  $f(x) &#x3D; 0 \Rightarrow">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-20T03:20:00.000Z">
+<meta property="article:modified_time" content="2020-03-08T15:06:49.989Z">
+<meta property="article:author" content="nullfan">
+<meta property="article:tag" content="deep learning">
+<meta property="article:tag" content="linear algebra">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lpfan0307.com/2020/01/20/Deep-Learning读书笔记-chp2-Linear-Algebra/"/>
+
+
+
+
+
+  <title>Deep Learning读书笔记 chp2-Linear Algebra | life of nullfan</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">life of nullfan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lpfan0307.com/2020/01/20/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp2-Linear-Algebra/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="nullfan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="life of nullfan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Deep Learning读书笔记 chp2-Linear Algebra</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-01-20T11:20:00+08:00">
+                2020-01-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Deep Learning第二章，线性代数，这里我摘抄一些重要的公式，顺便练习下latex  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">矩阵乘法的分配律和结合律</span><br></pre></td></tr></table></figure>
+<ul>
+<li>$A(B+C) = AB + AC$</li>
+<li>$A(BC) = (AB)C$  </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Norms</span><br></pre></td></tr></table></figure>
+<p>$L^p $ Norm如下：<br>$||x||_p = (\sum_i{|x_i|}^p)^{1 \over p}$  </p>
+<p>Norm有如下性质：</p>
+<ul>
+<li>$f(x) = 0 \Rightarrow x = 0$  </li>
+<li>$f(x + y) \leq f(x) + f(y) $(the triangle inequality)</li>
+<li>$\forall \alpha \in \mathbb{R}, f({\alpha}x) = |\alpha|f(x)$</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">正交矩阵(orthogonal matrix)</span><br></pre></td></tr></table></figure>
+<p>单位矩阵(unit vector)：$||x||_2 = 1$<br>正交矩阵：$A^TA = AA^T = I$，这意味着 $A^{-1} = A^T$</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">正定矩阵(positive definite)</span><br></pre></td></tr></table></figure>
+<p>所有的特征值都为整数的矩阵是正定矩阵(positive define)，所有特征值都为非负数的矩阵是半正定矩阵(positive semidefine)<br>所有的半正定矩阵存在如下性质：${\forall} x, x^TAx \geq 0$<br>正定矩阵还有额外性质：$x^TAx = 0 \Rightarrow x = 0$</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">特征分解（eigendecomposition）</span><br></pre></td></tr></table></figure>
+<p>$A$的特征向量表示：<br>$Av = {\lambda}v$，其中$v$为非0向量，表示$A$的特征向量，$\lambda$为对应特征值<br>由于$v$的每个元素放大$k$倍，还是$A$的特征向量，所以通常情况是考虑$v$为单位向量的情况<br>假设$A$有$n$个线性无关特征向量，表示为 $V = [v^{(1)}, … , v^{(n)}]$，对应的特征值表示为 $\lambda = [{\lambda}^{(1)}, … , {\lambda}^{(n)}]$，则矩阵$A$的特征分解表示为$$A = V{diag(\lambda)}V^{-1}$$，并不是所有的矩阵都有对应的特征分解。  </p>
+<p>实数对称矩阵有一个很好的性质，每个实数对称矩阵都可以被分解为如下：$$A = Q{\Lambda}Q^T$$，其中$Q$是由矩阵$A$的特征向量组成的正交矩阵，$\Lambda$是由$A$的特征值组成的对角矩阵  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">奇异值分解(sigular value decomposition)</span><br></pre></td></tr></table></figure>
+<p>有些矩阵不存在特征分解，但任何矩阵都存在奇异值分解，$A = UDV^T$<br>假设$A$是$m \times n$的矩阵，则$U$是$m \times m$的正交矩阵，$D$是对角矩阵，$V$也是正交矩阵<br>更进一步，可以理解为$U$是$AA^T$的特征向量，$V$是$A^TA$的特征向量，非零的奇异值是$A^TA$的平方根  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">摩尔-彭若斯广义逆(The Moore-Penrose Pseudoinverse)</span><br></pre></td></tr></table></figure>
+<p>对于$Ax = y$,我们希望可以找到一个矩阵$B$，左乘以后希望可以得到$x = By$<br>对于不同特性的$A$，可能不存在这样的矩阵$B$或者是存在多个这样的矩阵$B$<br>摩尔-彭若斯广义逆定义如下：$A^+ = \lim_{\alpha \searrow 0}(A^TA + {\alpha}I)^{-1}A^T$<br>实际应用中通常采用另一种方式计算广义逆 $A^+ = VD^+U^T$，其中$U$、$V$、$D$是$A$的奇异值分解对应的矩阵，$D^+$是通过$D$的非零元素取倒数得到的矩阵转置得到<br>当$A$的列数多余行数时，广义逆是无数可能解法中的一种，其中 $x = A^+y$是所有解法中$x$的二范数$(||x||_2)$最小的解<br>当$A$的行数多余列数时，左乘的矩阵的解有可能不存在。在这种情况下，使用广义逆得到的$x$，会使得$Ax$和$y$在欧氏距离上最小$(||Ax-y||_2)$</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">矩阵的迹(The Trace Operator)</span><br></pre></td></tr></table></figure>
+<p>$Tr(A) = \sum_i{A_{i,i}}$</p>
+<p>矩阵的迹有如下性质:</p>
+<ul>
+<li>$||A||_F = \sqrt{AA_T}$</li>
+<li>$Tr(A) = Tr(A^T)$  </li>
+<li>$Tr(ABC) = Tr(CBA) = Tr(BCA)$  </li>
+<li>$Tr(AB) = Tr(BA)$  </li>
+<li>$a = Tr(a)$  </li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">行列式(the Determinant)</span><br></pre></td></tr></table></figure>
+<p>$det(A)$为矩阵的所有特征值的乘积<br>行列式的绝对值表示与该矩阵相乘时，被乘矩阵在空间延展或者浓缩的程度。如果矩阵的行列式为0，乘完后失去所有体积； 如果矩阵行列式绝对值为1，乘完后保持体积不变。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">主成分分析(prinipal components analysis)</span><br></pre></td></tr></table></figure>
+<p>主成分分析需要做的事情是这样的，假设我们有一个$n$维的数据，即$x \in {\mathbb{R}}^n$，我们希望可以找到一个映射关系f，将$x$映射到$l$维中，即$f(x) = c$，$c \in {\mathbb{R}}^l，$其中$l \lt n$。同时，在映射的过程中保持信息损失的信息尽可能的少，即我们可以找到另一个映射关系$g$，将$c$映射为$n$维的空间，映射回来的结果要和原始结果尽量接近，即$x \approx g(f(x))$。主成分分析就是希望可以找到$f$和$g$<br>为了简化问题，我们假设$g(c)$的对应的解码方式如下$g(c) = Dc$，其中$D \in {\mathbb{R}}^{n \times l}$<br>为了是问题简便，主成分分析时加了两个约束条件  </p>
+<ul>
+<li>矩阵D的每列互相正交  </li>
+<li>矩阵D的每列都是单位向量 </li>
+</ul>
+<p>主成分分析的主要思想是$x \approx g(f(x))$，如果采用二范式，</p>
+<p>则为$c^* = \underset{c}{\arg \min} ||x -g(c)||_2$，</p>
+<p>等价于$c^* = \underset{c}{\arg \min} ||x -g(c)||_2^2 $   </p>
+<p>$||x -g(c)||_2^2 = {(x-g(c))}^T(x-g(c))$ $=$ $x^Tx - x^Tg(c) - {g(c)}^Tx + {g(c)}^Tg(c)$ =  $x^Tx - 2x^Tg(c) + {g(c)}^Tg(c)$<br>去除和$c$无关的部分，$c^* =\underset{c}{\arg \min} - 2x^Tg(c) + {g(c)}^Tg(c)$  </p>
+<p>将$g(c) = Dc$代入，$c^* =\underset{c}{\arg \min} - 2x^TDc + {Dc}^TDc$ </p>
+<p>$=\underset{c}{\arg \min} - 2x^TDc + c^TI_lc$<br>$=\underset{c}{\arg \min} - 2x^TDc + c^Tc$<br>上式对$c$求导，即 $-2D^Tx + 2c = 0 \Rightarrow c = D^Tx$<br>上述推导表明，对于给定的$x,D$，$c$取$D^Tx$是目标的最优解<br>又知道$c = f(x)$，则有$f(x) = c = D^Tc$, $r(x) = g(f(x)) = g(c) = Dc = DD^Tc$<br>考虑所有的样本，则最终表达式为$D^* = \underset{D} \arg \min \sum_{i,j} {(x_j^{(i)} - r(x^{(i)})_j)}^2,, s.t. D^TD = I_l$<br>考虑$l=1$的情况，上面的式子化简为   </p>
+<p>$d^* = \underset{d} \arg \min \underset{i} \sum ||x^(i) - dd^Tx^{(i)}||_2^2, s.t. ||d||_2 = 1$    </p>
+<p>考虑所有样本，$d^* = \underset{d} \arg \min \underset{i} \sum ||X - dd^TX||_2^2, s.t. ||d||_2 = 1$  </p>
+<p>$\underset{d} \arg \min ||X - Xdd^T||_F^2 s.t. d^d = 1$ </p>
+<p>不考虑约束条件 </p>
+<p>$\underset{d} \arg \min ||X - Xdd^T||_F^2$  </p>
+<p>$=\underset{d} \arg \min Tr((X - Xdd^T)^T(X-Xdd^T))$<br>$=\underset{d} \arg \min Tr(X^TX - X^TXdd^T - dd^TX^TX + dd^TX^TXdd^T)$<br>$=\underset{d} \arg \min Tr(- X^TXdd^T - dd^TX^TX + dd^TX^TXdd^T)$(去除不包含d的项)<br>$=\underset{d} \arg \min -Tr( X^TXdd^T) - Tr(dd^TX^TX) + Tr(dd^TX^TXdd^T)$<br>$=\underset{d} \arg \min -2Tr( X^TXdd^T)  + Tr(dd^TX^TXdd^T)$<br>$=\underset{d} \arg \min -2Tr( X^TXdd^T)  + Tr(X^TXdd^Tdd^T)$<br>$=\underset{d} \arg \min -2Tr( X^TXdd^T)  + Tr(X^TXdd^T)$ （$d^Td = 1$）<br>$=\underset{d} \arg \min -Tr( X^TXdd^T)  $ （$d^Td = 1$）<br>$=\underset{d} \arg \max Tr( X^TXdd^T)  $ （$d^Td = 1$）<br>$=\underset{d} \arg \max Tr( d^TX^TXd)  $ （$d^Td = 1$）  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">参考资料</span><br></pre></td></tr></table></figure>
+<p>latex数学公式在线编辑器：所见即所得  <a href="https://zohooo.github.io/jaxedit/" target="_blank" rel="noopener">https://zohooo.github.io/jaxedit/</a><br>latex输入语法：<a href="https://zhuanlan.zhihu.com/p/50667788" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/50667788</a><br>latex箭头汇总:<a href="https://blog.csdn.net/liyuanbhu/article/details/51473886" target="_blank" rel="noopener">https://blog.csdn.net/liyuanbhu/article/details/51473886</a><br>pac讲解视频：<a href="https://www.youtube.com/watch?v=FgakZw6K1QQ" target="_blank" rel="noopener">https://www.youtube.com/watch?v=FgakZw6K1QQ</a><br>latex特殊符号：<a href="https://blog.csdn.net/caiandyong/article/details/53351737" target="_blank" rel="noopener">https://blog.csdn.net/caiandyong/article/details/53351737</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          
+            <a href="/tags/linear-algebra/" rel="tag"># linear algebra</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/01/19/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp1-introduction/" rel="next" title="Deep Learning读书笔记 chp1-introduction">
+                <i class="fa fa-chevron-left"></i> Deep Learning读书笔记 chp1-introduction
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/03/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="prev" title="Deep Learning读书笔记 chp3-Probability and Information Theory">
+                Deep Learning读书笔记 chp3-Probability and Information Theory <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">nullfan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nullfan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

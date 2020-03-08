@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="正则化的几种方式惩罚项和约束项借助广义拉格朗日算法，惩罚项和约束项在一定程度上可以看做是等价的。   数据增广（data augmentation）数据增光对于一些特定的问题可以取得很好的效果，例如在物体识别中，将图片的每个像素沿着某个方向旋转，将新获得的图片加入训练集，通常可以获得很好的效果，即便是在使用的卷积这样对旋转不变的操作后。 噪声鲁棒性（noise robustnesss）一般来说，噪">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Deep Learning读书笔记 chp7-Regularization for Deep Learning">
+<meta property="og:url" content="http://lpfan0307.com/2020/02/23/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp7-Regularization-for-Deep-Learning/index.html">
+<meta property="og:site_name" content="life of nullfan">
+<meta property="og:description" content="正则化的几种方式惩罚项和约束项借助广义拉格朗日算法，惩罚项和约束项在一定程度上可以看做是等价的。   数据增广（data augmentation）数据增光对于一些特定的问题可以取得很好的效果，例如在物体识别中，将图片的每个像素沿着某个方向旋转，将新获得的图片加入训练集，通常可以获得很好的效果，即便是在使用的卷积这样对旋转不变的操作后。 噪声鲁棒性（noise robustnesss）一般来说，噪">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://lpfan0307.com/images/pasted-66.png">
+<meta property="og:image" content="http://lpfan0307.com/images/pasted-68.png">
+<meta property="article:published_time" content="2020-02-23T15:20:12.000Z">
+<meta property="article:modified_time" content="2020-03-08T15:06:49.990Z">
+<meta property="article:author" content="nullfan">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://lpfan0307.com/images/pasted-66.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://lpfan0307.com/2020/02/23/Deep-Learning读书笔记-chp7-Regularization-for-Deep-Learning/"/>
+
+
+
+
+
+  <title>Deep Learning读书笔记 chp7-Regularization for Deep Learning | life of nullfan</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">life of nullfan</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://lpfan0307.com/2020/02/23/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp7-Regularization-for-Deep-Learning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="nullfan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="life of nullfan">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Deep Learning读书笔记 chp7-Regularization for Deep Learning</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-23T23:20:12+08:00">
+                2020-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="正则化的几种方式"><a href="#正则化的几种方式" class="headerlink" title="正则化的几种方式"></a>正则化的几种方式</h1><h2 id="惩罚项和约束项"><a href="#惩罚项和约束项" class="headerlink" title="惩罚项和约束项"></a>惩罚项和约束项</h2><p>借助广义拉格朗日算法，惩罚项和约束项在一定程度上可以看做是等价的。  </p>
+<h2 id="数据增广（data-augmentation）"><a href="#数据增广（data-augmentation）" class="headerlink" title="数据增广（data augmentation）"></a>数据增广（data augmentation）</h2><p>数据增光对于一些特定的问题可以取得很好的效果，例如在物体识别中，将图片的每个像素沿着某个方向旋转，将新获得的图片加入训练集，通常可以获得很好的效果，即便是在使用的卷积这样对旋转不变的操作后。</p>
+<h2 id="噪声鲁棒性（noise-robustnesss）"><a href="#噪声鲁棒性（noise-robustnesss）" class="headerlink" title="噪声鲁棒性（noise robustnesss）"></a>噪声鲁棒性（noise robustnesss）</h2><p>一般来说，噪声的引入比单纯的对参数的shrinking要重要，特别是这些噪声是加在隐层单元上时。</p>
+<h2 id="multi-task-learning"><a href="#multi-task-learning" class="headerlink" title="multi-task learning"></a>multi-task learning</h2><p>多任务学习模型的架构：<br>屏幕快照 2020-02-23 下午11.37.16<br><img src="/images/pasted-66.png" alt="upload successful"><br>多任务学习中，一个模型的参数会由两个部分组成（1）模型特有的参数（2）几个模型通用的参数。可以使用多任务学习的一个前提是不同的任务之间存在某些统计学上的关系。</p>
+<h2 id="early-stopping"><a href="#early-stopping" class="headerlink" title="early stopping"></a>early stopping</h2><h2 id="bagging-and-other-ensemble-methods"><a href="#bagging-and-other-ensemble-methods" class="headerlink" title="bagging and other ensemble methods"></a>bagging and other ensemble methods</h2><p>将几组模型平均通常比单个模型取得更好的效果，这背后的原因是因为不同的模型通常不会犯相同的错误。  </p>
+<p><img src="/images/pasted-68.png" alt="upload successful">  </p>
+<h2 id="dropout"><a href="#dropout" class="headerlink" title="dropout"></a>dropout</h2><p>dropout和bagging的关联：（1）bagging的各个模型的参数是独立的，但dropout的各个模型的参数是从母shenjingwangluo继承的不同子集，（2）bagging的每个模型都可以被充分训练，而dropout的模型数太多以至于让每个模型充分训练是不太现实的，但各个模型之间的参数共享可以使得各个模型都取得一个不错的结果。（3）除此之外，bagging和dropout是一样的。<br>dropout有的优点：</p>
+<ul>
+<li>计算更加轻便  </li>
+<li>对神经网络的结构没有要求，通用性很广<br>dropout取得很好的结果，很大一部分是来自于给隐层节点的噪声。例如，如果需要识别一个人脸，一个隐藏节点通过鼻子学到该脸部的信息，当这个节点被随机丢弃时，就迫使神经网络去学习其他如嘴巴、耳朵等信息。而传统的噪声引入很难做到将一个鼻子或者嘴巴丢掉这样。</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/20/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp5-Machine-Learning-Basics/" rel="next" title="Deep Learning读书笔记 chp6-Deep Feedforward Networks">
+                <i class="fa fa-chevron-left"></i> Deep Learning读书笔记 chp6-Deep Feedforward Networks
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/24/Deep-Learning%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0-chp8-Regularization-for-Deep-Learning/" rel="prev" title=" Deep Learning读书笔记 chp8-Regularization for Deep Learning">
+                 Deep Learning读书笔记 chp8-Regularization for Deep Learning <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">nullfan</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">categories</span>
+                
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#正则化的几种方式"><span class="nav-number">1.</span> <span class="nav-text">正则化的几种方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#惩罚项和约束项"><span class="nav-number">1.1.</span> <span class="nav-text">惩罚项和约束项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据增广（data-augmentation）"><span class="nav-number">1.2.</span> <span class="nav-text">数据增广（data augmentation）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#噪声鲁棒性（noise-robustnesss）"><span class="nav-number">1.3.</span> <span class="nav-text">噪声鲁棒性（noise robustnesss）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#multi-task-learning"><span class="nav-number">1.4.</span> <span class="nav-text">multi-task learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#early-stopping"><span class="nav-number">1.5.</span> <span class="nav-text">early stopping</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bagging-and-other-ensemble-methods"><span class="nav-number">1.6.</span> <span class="nav-text">bagging and other ensemble methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dropout"><span class="nav-number">1.7.</span> <span class="nav-text">dropout</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">nullfan</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
